@@ -1,0 +1,56 @@
+name: Node.js CI/CD
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [16.x, 18.x, 20.x, 22.x]
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'npm'
+
+    - name: Install dependencies
+      run: npm ci
+
+    - name: Run linting checks
+      run: npm run lint
+
+    - name: Run tests
+      run: npm test
+
+  docker-build-and-push:
+    needs: build-and-test
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Log in to Docker Hub
+      uses: docker/login-action@v3
+      with:
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+
+    - name: Build & push Docker image to Docker Hub
+      uses: docker/build-push-action@v5
+      with:
+        context: .
+        file: Dockerfile
+        push: true
+        tags: distinctugo/darey-github-actions:v1, distinctugo/darey-github-actions:latest
+
