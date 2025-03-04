@@ -3,9 +3,8 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node src/server.js",
     "test": "mocha tests/*.test.js",
+    "start": "node src/server.js",
     "lint": "eslint . --config eslint.config.js"
   },
   "keywords": [],
@@ -18,9 +17,9 @@
     "morgan": "^1.10.0"
   },
   "devDependencies": {
-    "mocha": "^10.2.0",
     "chai": "^5.1.0",
     "chai-http": "^4.4.0",
-    "eslint": "^8.56.0"
+    "eslint": "^8.56.0",
+    "mocha": "^10.2.0"
   }
 }
